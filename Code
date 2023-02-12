@@ -1,0 +1,46 @@
+import string
+
+# Define the set of racial slurs
+RACIAL_SLURS = {"nigger", "kike", "spic", "chink", "gook", "wetback", "curry", "raghead"}
+
+def calculate_profanity_degree(sentence):
+    """Calculate the degree of profanity in the given sentence.
+
+    This function returns a float value between 0 and 1 indicating the degree of profanity in the sentence. 
+    The higher the value, the more profane the sentence.
+    
+    Args:
+        sentence (str): The sentence to calculate the profanity degree for.
+
+    Returns:
+        float: The degree of profanity in the sentence.
+    """
+    # Remove punctuation and convert to lowercase
+    sentence = sentence.translate(str.maketrans("", "", string.punctuation)).lower()
+    # Split the sentence into words
+    words = sentence.split()
+    # Count the number of racial slurs in the sentence
+    count = len([word for word in words if word in RACIAL_SLURS])
+    # Return the profanity degree as a fraction of the total number of words
+    return count / len(words) if words else 0
+
+def process_tweets_file(filename):
+    """Process the given file containing tweets and calculate the profanity degree for each tweet.
+    
+    This function reads the given file, calculates the profanity degree for each tweet, and prints the results.
+
+    Args:
+        filename (str): The name of the file containing the tweets.
+    """
+    with open(filename, "r") as f:
+        # Read the tweets from the file
+        tweets = f.readlines()
+    # Calculate the profanity degree for each tweet
+    results = [(tweet.strip(), calculate_profanity_degree(tweet)) for tweet in tweets]
+    # Print the results
+    for tweet, profanity_degree in results:
+        print(f"Tweet: {tweet}")
+        print(f"Profanity degree: {profanity_degree}")
+
+# Example usage
+process_tweets_file("tweets.txt")
